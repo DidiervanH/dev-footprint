@@ -8,7 +8,7 @@ import { scanSkillsAndPlugins } from "./skills-plugins.js";
 import { scanTempFiles } from "./temp-files.js";
 import { scanVSCode } from "./vscode.js";
 
-export interface ClaudeScanResult {
+interface ClaudeScanResult {
   location: ScannedLocation;
   installation: Installation;
   skills: InstalledSkill[];

@@ -3,7 +3,7 @@ import path from "node:path";
 import type { DuplicatePackage, ScannedLocation } from "../types.js";
 import { collapseHome, expandHome, getDirSize, pathExists, readJsonFile } from "../utils.js";
 
-export interface NodeModulesResult {
+interface NodeModulesResult {
   location: ScannedLocation;
   duplicates: DuplicatePackage[];
   allPackages: { name: string; version: string; size: number }[];
