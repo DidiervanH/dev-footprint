@@ -12,8 +12,6 @@ dist/
 .claude/
 .codex/
 setup.md
-biome.json
-knip.json
 lefthook.yml
 skills-lock.json
 .nexus-scaffoldrc.json
