@@ -36,6 +36,23 @@ import { scanXcode } from "./scanners/xcode.js";
 import type { CategorySummary, FootprintReport, ScannedLocation } from "./types.js";
 import { formatBytes, getDefaultScanRoots } from "./utils.js";
 
+// ── Progress indicator ──────────────────────────────────────────────
+const SPINNER = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+let spinnerIdx = 0;
+
+function progress(step: number, total: number, label: string, silent: boolean): void {
+  if (silent) return;
+  const frame = SPINNER[spinnerIdx % SPINNER.length];
+  spinnerIdx++;
+  const pad = String(step).padStart(String(total).length, " ");
+  process.stderr.write(`\r\x1b[K${frame} [${pad}/${total}] Scanning ${label}...`);
+}
+
+function progressDone(silent: boolean): void {
+  if (silent) return;
+  process.stderr.write("\r\x1b[K");
+}
+
 interface CliOptions {
   json?: boolean;
   terminal?: boolean;
@@ -93,29 +110,48 @@ async function main(): Promise<void> {
     ? opts.scanDirs.split(",").map((s) => s.trim())
     : getDefaultScanRoots();
 
-  if (!opts.json) {
-    process.stderr.write("Scanning...\n");
-  }
+  const silent = !!opts.json;
+  const total = 18;
+  let step = 0;
 
-  // Step 1: Run all scanners
+  // Step 1: Run all scanners with progress
+  progress(++step, total, "Claude Code", silent);
   const claudeResult = await scanClaude();
+  progress(++step, total, "node_modules", silent);
   const nodeModulesResult = scanNodeModules(scanRoots);
+  progress(++step, total, "Xcode", silent);
   const xcodeLocation = scanXcode();
+  progress(++step, total, "Python", silent);
   const pythonLocation = scanPython(scanRoots);
+  progress(++step, total, "VS Code", silent);
   const vscodeLocation = scanVSCodeFull();
+  progress(++step, total, "Git repos", silent);
   const gitLocation = scanGitRepos(scanRoots);
+  progress(++step, total, "Docker", silent);
   const dockerLocation = scanDocker();
+  progress(++step, total, "Homebrew", silent);
   const homebrewLocation = scanHomebrew();
+  progress(++step, total, "package caches", silent);
   const packageCachesLocation = scanPackageCaches();
+  progress(++step, total, "CocoaPods", silent);
   const cocoapodsLocation = scanCocoaPods(scanRoots);
+  progress(++step, total, "Rust", silent);
   const rustLocation = scanRust();
+  progress(++step, total, "Go", silent);
   const goLocation = scanGo();
+  progress(++step, total, "Ruby", silent);
   const rubyLocation = scanRuby();
+  progress(++step, total, "Android", silent);
   const androidLocation = scanAndroid();
+  progress(++step, total, "iOS backups", silent);
   const iosBackupsLocation = scanIOSBackups();
+  progress(++step, total, "Bun & Deno", silent);
   const bunDenoLocation = scanBunDeno();
+  progress(++step, total, "system caches", silent);
   const systemCachesLocation = scanSystemCaches();
+  progress(++step, total, "Trash", silent);
   const trashLocation = scanTrash();
+  progressDone(silent);
 
   // Collect all top-level category locations
   const categoryLocations: ScannedLocation[] = [
