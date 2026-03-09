@@ -1,0 +1,44 @@
+node_modules/
+dist/
+*.tgz
+.DS_Store
+.env
+.env.*
+*.pem
+*.key
+# Environment variables
+!.env.example
+# nexus-ops managed files (recreated on install via postinstall hook)
+.claude/
+.codex/
+setup.md
+biome.json
+knip.json
+lefthook.yml
+skills-lock.json
+.nexus-scaffoldrc.json
+scripts/nexus-ops-discord-bot.cjs
+
+# Internal docs and planning (not for public repo)
+.docs/
+documentation/
+AGENTS.md
+
+# Generated reports
+*-footprint-report.html
+
+# Build output
+build/
+.next/
+.expo/
+# Dependencies
+# Lefthook local overrides
+lefthook-local.yml
+# OS
+Thumbs.db
+# Editor
+*.swp
+*.swo
+*~
+.idea/
+.vscode/settings.json
